@@ -10,7 +10,7 @@ const Nav = () => {
           to="/"
           className={currentPage === '/' ? 'nav-link active' : 'nav-link'}
         >
-          Candidate Search
+          Home
         </Link>
       </li>
       <li className="nav-item">
@@ -18,7 +18,7 @@ const Nav = () => {
           to="/Portfolio"
           className={currentPage === '/Portfolio' ? 'nav-link active' : 'nav-link'}
         >
-          Saved Candidates
+          Potential Candidates
         </Link>
       </li>
     </ul>

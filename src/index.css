@@ -118,3 +118,9 @@ tbody tr:nth-child(odd) {
   width: 80vw;
   table-layout: fixed;
 }
+
+.avatar {
+  width: 95px;
+  height: 95px;
+  
+}

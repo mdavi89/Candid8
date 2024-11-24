@@ -1,43 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import Candidate from '../interfaces/Candidate.interface';
 import { searchGithub, searchGithubUser } from '../api/API';
+import { setCandidateData } from '../components/CandidateData';
 
-const CandidateSearch: React.FC = () => {
-  const [candidates, setCandidates] = useState<Candidate[]>([]);
-  const [selectedCandidates, setSelectedCandidates] = useState<Candidate[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchCandidates = async () => {
-      try {
-        setLoading(true);
-        const users = await searchGithub();
-        const candidateData: Candidate[] = [];
-
-        for (const user of users) {
-          const userDetails = await searchGithubUser(user.login);
-          candidateData.push(userDetails as Candidate);
+  const CandidateSearch: React.FC = () => {
+    const [candidates, setCandidates] = useState<Candidate[]>([]);
+    const [selectedCandidates, setSelectedCandidates] = useState<Candidate[]>([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
+  
+    useEffect(() => {
+      const fetchCandidates = async () => {
+        try {
+          const users = await searchGithub();
+          const fetchedCandidates: Candidate[] = await Promise.all(
+            users.map((user) => searchGithubUser(user.login))
+          );
+  
+          setCandidates(fetchedCandidates); // Update local state// Update global data
+        } catch (error) {
+          console.error('Error fetching candidates:', error);
         }
-
-        setCandidates(candidateData);
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to fetch candidates. Please try again later.');
-        setLoading(false);
-        console.error(err);
-      }
-    };
-
-    fetchCandidates();
-  }, []);
+      };
+  
+      fetchCandidates();
+    }, []);
 
   const handleAddCandidate = () => {
     const candidate = candidates[currentIndex];
     // Avoid duplicates in the selected list
     if (!selectedCandidates.some((c) => c.login === candidate.login)) {
       setSelectedCandidates((prev) => [...prev, candidate]);
+      setCandidateData([...selectedCandidates, candidate])
     }
     handleNextCandidate();
   };
@@ -47,14 +40,6 @@ const CandidateSearch: React.FC = () => {
       prevIndex < candidates.length - 1 ? prevIndex + 1 : 0
     );
   };
-
-  if (loading) {
-    return <div>Loading candidates...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
 
   if (candidates.length === 0) {
     return <div>No candidates found.</div>;
@@ -95,18 +80,6 @@ const CandidateSearch: React.FC = () => {
           -
         </button>
       </div>
-      <h2 className="mt-4">Selected Candidates</h2>
-      {selectedCandidates.length > 0 ? (
-        <ul>
-          {selectedCandidates.map((selected) => (
-            <li key={selected.login}>
-              {selected.name || selected.login} ({selected.location || 'N/A'})
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No candidates selected yet.</p>
-      )}
     </div>
   );
 };

@@ -25,23 +25,30 @@ import { setCandidateData } from '../components/CandidateData';
       fetchCandidates();
     }, []);
 
-  const handleAddCandidate = () => {
-    const candidate = candidates[currentIndex];
-    // Avoid duplicates in the selected list
-    if (!selectedCandidates.some((c) => c.login === candidate.login)) {
-      setSelectedCandidates((prev) => [...prev, candidate]);
-      setCandidateData([...selectedCandidates, candidate])
-    }
-    localStorage.setItem('Candidates', JSON.stringify(selectedCandidates));
-    handleNextCandidate();
+    const handleAddCandidate = () => {
+      const candidate = candidates[currentIndex];
+      if (!selectedCandidates.some((c) => c.login === candidate.login)) {
+        setSelectedCandidates((prevSelected) => {
+          const updatedSelected = [...prevSelected, candidate];
     
-  };
+          // Update the global data and localStorage with the new list
+          setCandidateData(updatedSelected);
+          localStorage.setItem('Candidates', JSON.stringify(updatedSelected));
+    
+          return updatedSelected; // Ensure the state gets updated
+        });
+      }
+    
+      handleNextCandidate();
+    };
 
   const handleNextCandidate = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex < candidates.length - 1 ? prevIndex + 1 : 0
     );
   };
+
+
 
   if (candidates.length === 0) {
     return <div>No candidates found.</div>;

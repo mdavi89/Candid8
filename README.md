@@ -31,4 +31,4 @@ Please submit questions at the following links
 Email: [mdavi359@yahoo.com](mailto:mdavi359@yahoo.com).
 Github: [mdavi89](https://github.com/mdavi89).
 
-Link to deployed app:[Candid8](https://weather-vane.onrender.com/)
+Link to deployed app:[Candid8](https://candid8.onrender.com/)

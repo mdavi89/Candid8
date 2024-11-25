@@ -32,7 +32,9 @@ import { setCandidateData } from '../components/CandidateData';
       setSelectedCandidates((prev) => [...prev, candidate]);
       setCandidateData([...selectedCandidates, candidate])
     }
+    localStorage.setItem('Candidates', JSON.stringify(selectedCandidates));
     handleNextCandidate();
+    
   };
 
   const handleNextCandidate = () => {
